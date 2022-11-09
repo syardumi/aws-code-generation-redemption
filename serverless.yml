@@ -42,7 +42,7 @@ functions:
     events:
       - http:
           method: post
-          path: /code/create
+          path: /create
           cors: true
   redeemCode:
     handler: src/redeemCode.handler
@@ -50,7 +50,7 @@ functions:
     events:
       - http:
           method: post
-          path: /code/redeem
+          path: /redeem
           cors: true
   expireCodes:
     handler: src/expireCodes.fire
