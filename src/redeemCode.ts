@@ -27,7 +27,8 @@ export const handler: Handler = async (event, _context, _callback) => {
     }
 
     return {
-      statusCode: 200
+      statusCode: 200,
+      body: JSON.stringify(response.Attributes)
     }
   } catch (e) {
     return {
