@@ -1,9 +1,23 @@
 # Code Redemption (built using AWS)
 
-This library uses AWS services to create a 'code redemption' system which can
+This API library uses AWS services to create a 'code redemption' system which can
 handle multiple domains (e.g. divisions) and expiration of codes. Codes are
 unique only to their own domains. The system scales automatically using AWS
 services API Gateway, Cloudfront, Lambda, and DynamoDB.
+
+---
+
+## Requirements
+
+- Node 16.x
+- Yarn
+
+---
+
+## Install & Deploy
+
+- `yarn`
+- `npx serverless deploy [--stage dev|prod] [--aws-profile 'name']`
 
 ---
 
