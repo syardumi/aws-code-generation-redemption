@@ -24,6 +24,12 @@ provider:
       Action:
         - "iam:PassRole"
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}/*
   environment:
     STAGE: ${self:provider.stage}
     CODE_TABLE_NAME: ${self:service}-${self:provider.stage}
@@ -65,19 +71,21 @@ resources:
           AttributeName: expire_timestamp
           Enabled: true
         AttributeDefinitions:
-          - AttributeName: domain
+          - AttributeName: code_domain
             AttributeType: S
           - AttributeName: code_hash
             AttributeType: S
           - AttributeName: expire_timestamp
             AttributeType: "N"
         KeySchema:
-          - AttributeName: code_hash
+          - AttributeName: code_domain
             KeyType: HASH
+          - AttributeName: code_hash
+            KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: expired_in_domain_GSI
             KeySchema:
-              - AttributeName: domain
+              - AttributeName: code_domain
                 KeyType: HASH
               - AttributeName: expire_timestamp
                 KeyType: RANGE

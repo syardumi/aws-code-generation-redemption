@@ -12,12 +12,11 @@ export const fire: Handler = async (event, _context, _callback) => {
           TableName: process.env.CODE_TABLE_NAME,
           IndexName: 'expired_in_domain_GSI',
           KeyConditionExpression:
-            'domain = :domain and expire_timestamp < :time',
+            'code_domain = :d and expire_timestamp < :time',
           ExpressionAttributeValues: {
-            ':domain': { S: process.env.DOMAIN },
-            ':time': { N: new Date().getTime() }
+            ':d': process.env.DOMAIN,
+            ':time': new Date().getTime()
           },
-          ConsistentRead: true,
           ScanIndexForward: true,
           ExclusiveStartKey,
           Limit: 100
@@ -30,6 +29,7 @@ export const fire: Handler = async (event, _context, _callback) => {
             .delete({
               TableName: process.env.CODE_TABLE_NAME,
               Key: {
+                code_domain: Item.code_domain,
                 code_hash: Item.code_hash
               }
             })

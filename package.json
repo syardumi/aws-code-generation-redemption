@@ -20,11 +20,13 @@
   "homepage": "https://github.com/syardumi/aws-code-redemption#readme",
   "dependencies": {
     "aws-sdk": "^2.1249.0",
+    "http-errors": "^2.0.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.108",
     "@types/eslint": "^8.4.10",
+    "@types/http-errors": "^2.0.1",
     "@types/jest": "^29.2.2",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.42.1",

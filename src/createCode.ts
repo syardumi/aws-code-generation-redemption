@@ -10,9 +10,15 @@ export const handler: Handler = async (event, _context, _callback) => {
     await ddb
       .put({
         TableName: process.env.CODE_TABLE_NAME,
-        Item
+        Item,
+        ConditionExpression:
+          'attribute_not_exists(code_domain) and attribute_not_exists(code_hash)'
       })
       .promise()
+      .catch((e) => {
+        console.error('Record Put Error', e)
+        throw e
+      })
 
     return {
       statusCode: 200
@@ -20,7 +26,10 @@ export const handler: Handler = async (event, _context, _callback) => {
   } catch (e) {
     return {
       statusCode: e.statusCode,
-      body: e.message
+      body:
+        e.message === 'The conditional request failed'
+          ? 'Record Already Exists'
+          : e.message
     }
   }
 }
