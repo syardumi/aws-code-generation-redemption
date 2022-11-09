@@ -32,6 +32,7 @@ _Body (JSON):_
 - `code_domain` (string): division in which this code can be used
 - `code_hash` (string): unique id for this code
 - `expire_timestamp` (number): the unix timestamp for when this code expires
+- \+ any other metadata you wish to store
 
 _Response:_
 
@@ -50,7 +51,7 @@ _Body (JSON):_
 _Response:_
 
 - 200: Success
-  - Body: Code Attributes
+  - Body: All Code Attributes
 - 404: Record Does Not Exist
 
 ---
