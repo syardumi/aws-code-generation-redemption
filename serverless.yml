@@ -1,0 +1,80 @@
+service: code-redemption
+frameworkVersion: ">=3.22.0"
+variablesResolutionMode: 20210326
+
+custom:
+  schedulePublishEnabled:
+    prod: true
+    staging: false
+    dev: false
+
+plugins:
+  - serverless-bundle
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  timeout: 300
+  memorySize: 256
+  lambdaHashingVersion: 20201221
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "iam:PassRole"
+      Resource: "*"
+  environment:
+    STAGE: ${self:provider.stage}
+
+functions:
+  createCode:
+    handler: src/createCode.handler
+    timeout: 30
+    events:
+      - http:
+          method: post
+          path: /code/create
+          cors: true
+  redeemCode:
+    handler: src/redeemCode.handler
+    timeout: 30
+    events:
+      - http:
+          method: post
+          path: /code/redeem
+          cors: true
+  expireCodes:
+    handler: src/expireCodes.fire
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: ${self:custom.schedulePublishEnabled.${self:provider.stage}}
+
+resources:
+  Resources:
+    # DynamoDB
+    RedemptionCodes:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "${self:service}-${self:provider.stage}"
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: domain
+            AttributeType: S
+          - AttributeName: code_hash
+            AttributeType: S
+          - AttributeName: expire_timestamp
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: code_hash
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: expired_in_domain_GSI
+            KeySchema:
+              - AttributeName: domain
+                KeyType: HASH
+              - AttributeName: expire_timestamp
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL

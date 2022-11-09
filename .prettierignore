@@ -1,0 +1,7 @@
+**/node_modules
+**/.serverless
+**/serverless
+**/coverage
+**/docs
+**/sls-package-output
+*.yml
