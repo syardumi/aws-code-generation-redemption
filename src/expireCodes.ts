@@ -34,12 +34,15 @@ export const fire: Handler = async (event, _context, _callback) => {
               }
             })
             .promise()
+            .catch((e) => {
+              console.error('Delete Record Error', e)
+            })
         })
       )
 
       ExclusiveStartKey = result.LastEvaluatedKey
     } while (result.Items.length && result.LastEvaluatedKey)
   } catch (e) {
-    // TODO: handle
+    console.error('Expire Codes Error', e)
   }
 }

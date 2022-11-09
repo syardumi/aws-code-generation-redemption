@@ -61,6 +61,9 @@ resources:
       Properties:
         TableName: "${self:service}-${self:provider.stage}"
         BillingMode: PAY_PER_REQUEST
+        TimeToLiveSpecification:
+          AttributeName: expire_timestamp
+          Enabled: true
         AttributeDefinitions:
           - AttributeName: domain
             AttributeType: S
