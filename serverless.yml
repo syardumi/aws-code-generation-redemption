@@ -26,6 +26,8 @@ provider:
       Resource: "*"
   environment:
     STAGE: ${self:provider.stage}
+    CODE_TABLE_NAME: ${self:service}-${self:provider.stage}
+    DOMAIN: wawa
 
 functions:
   createCode:
