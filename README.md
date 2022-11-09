@@ -1,4 +1,4 @@
-# Code Redemption (built using AWS)
+# Code Redemption API (built using AWS)
 
 This API library uses AWS services to create a 'code redemption' system which can
 handle multiple domains (e.g. divisions) and expiration of codes. Codes are
