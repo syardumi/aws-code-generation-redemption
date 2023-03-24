@@ -26,6 +26,11 @@ provider:
       Resource: "*"
     - Effect: "Allow"
       Action:
+        - "sqs:ReceiveMessage"
+        - "sqs:SendMessage"
+      Resource: arn:aws:sqs:${self:provider.region}:${aws:accountId}:${self:service}-*
+    - Effect: "Allow"
+      Action:
         - "dynamodb:*"
       Resource:
         - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}*
@@ -34,6 +39,8 @@ provider:
     STAGE: ${self:provider.stage}
     CODE_TABLE_NAME: ${self:service}-${self:provider.stage}
     DOMAIN_TABLE_NAME: ${self:service}-domains-${self:provider.stage}
+    CODE_EXPIRATION_QUEUE_URL:
+      Ref: CodeExpirationQueue
 
 functions:
   postCreateCode:
@@ -66,15 +73,15 @@ functions:
       - schedule:
           rate: rate(5 minutes)
           enabled: ${self:custom.schedulePublishEnabled.${self:provider.stage}}
-  # sqsExpireCodes:
-  #   handler: src/sqsExpireCodes.receive
-  #   events:
-  #     - sqs:
-  #           arn:
-  #             Fn::GetAtt:
-  #               - ___FILL HERE____
-  #               - Arn
-  #           batchSize: 1
+  sqsExpireCodes:
+    handler: src/sqsExpireCodes.receive
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - CodeExpirationQueue
+              - Arn
+          batchSize: 1
 
 resources:
   Resources:
@@ -84,9 +91,6 @@ resources:
       Properties:
         TableName: "${self:service}-domains-${self:provider.stage}"
         BillingMode: PAY_PER_REQUEST
-        TimeToLiveSpecification:
-          AttributeName: expire_timestamp
-          Enabled: true
         AttributeDefinitions:
           - AttributeName: code_domain
             AttributeType: S
@@ -123,3 +127,21 @@ resources:
             Projection:
               ProjectionType: ALL
     # SQS
+    CodeExpirationDeadLetterQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: '${self:service}-deadLetter-${self:provider.stage}'
+        MessageRetentionPeriod: 1209600 # Two weeks
+        VisibilityTimeout: 60
+    CodeExpirationQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: '${self:service}-${self:provider.stage}'
+        MessageRetentionPeriod: 1209600 # Two weeks
+        VisibilityTimeout: 900
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - CodeExpirationDeadLetterQueue
+              - Arn
+          maxReceiveCount: 2
