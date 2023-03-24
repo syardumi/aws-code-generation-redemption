@@ -3,7 +3,7 @@ frameworkVersion: ">=3.22.0"
 variablesResolutionMode: 20210326
 
 custom:
-  schedulePublishEnabled:
+  scheduleEnabled:
     prod: true
     staging: false
     dev: false
@@ -34,13 +34,13 @@ provider:
       Action:
         - "dynamodb:*"
       Resource:
-        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}
-        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}/*
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-hashes-${self:provider.stage}
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-hashes-${self:provider.stage}/*
         - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-domains-${self:provider.stage}
         - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-domains-${self:provider.stage}/*
   environment:
     STAGE: ${self:provider.stage}
-    CODE_TABLE_NAME: ${self:service}-${self:provider.stage}
+    CODE_TABLE_NAME: ${self:service}-hashes-${self:provider.stage}
     DOMAIN_TABLE_NAME: ${self:service}-domains-${self:provider.stage}
     CODE_EXPIRATION_QUEUE_URL:
       Ref: CodeExpirationQueue
@@ -75,7 +75,7 @@ functions:
     events:
       - schedule:
           rate: rate(5 minutes)
-          enabled: ${self:custom.schedulePublishEnabled.${self:provider.stage}}
+          enabled: ${self:custom.scheduleEnabled.${self:provider.stage}}
   sqsExpireCodes:
     handler: src/sqsExpireCodes.receive
     events:
@@ -89,7 +89,7 @@ functions:
 resources:
   Resources:
     # DynamoDB
-    Domains:
+    CodeDomains:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: "${self:service}-domains-${self:provider.stage}"
@@ -100,10 +100,10 @@ resources:
         KeySchema:
           - AttributeName: code_domain
             KeyType: HASH
-    RedemptionCodes:
+    CodeHashes:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: "${self:service}-${self:provider.stage}"
+        TableName: "${self:service}-hashes-${self:provider.stage}"
         BillingMode: PAY_PER_REQUEST
         TimeToLiveSpecification:
           AttributeName: expire_timestamp
