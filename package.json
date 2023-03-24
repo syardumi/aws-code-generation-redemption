@@ -1,6 +1,6 @@
 {
-  "name": "aws-code-redemption",
-  "version": "0.1.1",
+  "name": "aws-code-generation-redemption",
+  "version": "0.2.0",
   "scripts": {
     "lint": "eslint './src/**/*.{js,ts}'",
     "lint:fix": "eslint './src/**/*.{js,ts}' --fix",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/syardumi/aws-code-redemption.git"
+    "url": "git+https://github.com/syardumi/aws-code-generation-redemption.git"
   },
   "author": "Steve Yardumian",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/syardumi/aws-code-redemption/issues"
+    "url": "https://github.com/syardumi/aws-code-generation-redemption/issues"
   },
-  "homepage": "https://github.com/syardumi/aws-code-redemption#readme",
+  "homepage": "https://github.com/syardumi/aws-code-generation-redemption#readme",
   "dependencies": {
     "aws-sdk": "^2.1249.0",
     "http-errors": "^2.0.0",
