@@ -42,7 +42,7 @@ _Response:_
 
 `POST /generate`
 
-Generate a code hash and store it in DynamoDB. The Key is the combination of `code_domain` and `code_hash`.
+Generate a code hash based on the last 12 characters of UUID v4 and store it in DynamoDB. The Key is the combination of `code_domain` and `code_hash`.
 
 _Body (JSON):_
 
