@@ -6,7 +6,7 @@ export const handler: Handler = async (event, _context, _callback) => {
   const { code_domain, expire_timestamp } = JSON.parse(event.body)
 
   try {
-    const code_hash = uuidv4().split('-').slice(-1).toUpperCase()
+    const code_hash = uuidv4().split('-').slice(-1)[0].toUpperCase()
     await put({ code_domain, expire_timestamp, code_hash })
 
     return {

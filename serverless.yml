@@ -28,13 +28,16 @@ provider:
       Action:
         - "sqs:ReceiveMessage"
         - "sqs:SendMessage"
-      Resource: arn:aws:sqs:${self:provider.region}:${aws:accountId}:${self:service}-*
+      Resource: 
+        - { "Fn::GetAtt": ["CodeExpirationQueue", "Arn"] }
     - Effect: "Allow"
       Action:
         - "dynamodb:*"
       Resource:
-        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}*
-        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}*/*
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}/*
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-domains-${self:provider.stage}
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-domains-${self:provider.stage}/*
   environment:
     STAGE: ${self:provider.stage}
     CODE_TABLE_NAME: ${self:service}-${self:provider.stage}
