@@ -133,13 +133,13 @@ resources:
     CodeExpirationDeadLetterQueue:
       Type: 'AWS::SQS::Queue'
       Properties:
-        QueueName: '${self:service}-deadLetter-${self:provider.stage}'
+        QueueName: '${self:service}-expirations-deadLetter-${self:provider.stage}'
         MessageRetentionPeriod: 1209600 # Two weeks
         VisibilityTimeout: 60
     CodeExpirationQueue:
       Type: 'AWS::SQS::Queue'
       Properties:
-        QueueName: '${self:service}-${self:provider.stage}'
+        QueueName: '${self:service}-expirations-${self:provider.stage}'
         MessageRetentionPeriod: 1209600 # Two weeks
         VisibilityTimeout: 900
         RedrivePolicy:
