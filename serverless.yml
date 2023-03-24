@@ -28,40 +28,71 @@ provider:
       Action:
         - "dynamodb:*"
       Resource:
-        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}
-        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-${self:provider.stage}/*
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}*
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}*/*
   environment:
     STAGE: ${self:provider.stage}
     CODE_TABLE_NAME: ${self:service}-${self:provider.stage}
-    DOMAIN: wawa
+    DOMAIN_TABLE_NAME: ${self:service}-domains-${self:provider.stage}
 
 functions:
-  createCode:
-    handler: src/createCode.handler
+  postCreateCode:
+    handler: src/api/postCreateCode.handler
     timeout: 30
     events:
       - http:
           method: post
           path: /create
           cors: true
-  redeemCode:
-    handler: src/redeemCode.handler
+  postGenerateCode:
+    handler: src/api/postGenerateCode.handler
+    timeout: 30
+    events:
+      - http:
+          method: post
+          path: /generate
+          cors: true
+  postRedeemCode:
+    handler: src/api/postRedeemCode.handler
     timeout: 30
     events:
       - http:
           method: post
           path: /redeem
           cors: true
-  expireCodes:
-    handler: src/expireCodes.fire
+  scheduleGetAllDomains:
+    handler: src/scheduleGetAllDomains.fire
     events:
       - schedule:
           rate: rate(5 minutes)
           enabled: ${self:custom.schedulePublishEnabled.${self:provider.stage}}
+  # sqsExpireCodes:
+  #   handler: src/sqsExpireCodes.receive
+  #   events:
+  #     - sqs:
+  #           arn:
+  #             Fn::GetAtt:
+  #               - ___FILL HERE____
+  #               - Arn
+  #           batchSize: 1
 
 resources:
   Resources:
     # DynamoDB
+    Domains:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "${self:service}-domains-${self:provider.stage}"
+        BillingMode: PAY_PER_REQUEST
+        TimeToLiveSpecification:
+          AttributeName: expire_timestamp
+          Enabled: true
+        AttributeDefinitions:
+          - AttributeName: code_domain
+            AttributeType: S
+        KeySchema:
+          - AttributeName: code_domain
+            KeyType: HASH
     RedemptionCodes:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -91,3 +122,4 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
+    # SQS

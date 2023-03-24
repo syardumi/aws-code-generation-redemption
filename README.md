@@ -37,6 +37,23 @@ _Body (JSON):_
 _Response:_
 
 - 200: Success
+  - Body: `code_domain`+`code_hash` value
+- 400: Record Already Exists
+
+`POST /generate`
+
+Generate a code hash and store it in DynamoDB. The Key is the combination of `code_domain` and `code_hash`.
+
+_Body (JSON):_
+
+- `code_domain` (string): division in which this code can be used
+- `expire_timestamp` (number): the unix timestamp for when this code expires
+- \+ any other metadata you wish to store
+
+_Response:_
+
+- 200: Success
+  - Body: `code_domain`+`code_hash` value
 - 400: Record Already Exists
 
 `POST /redeem`
