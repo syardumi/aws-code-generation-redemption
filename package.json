@@ -20,7 +20,7 @@
   "homepage": "https://github.com/syardumi/aws-code-generation-redemption#readme",
   "dependencies": {
     "aws-sdk": "^2.1249.0",
-    "http-errors": "2.0.0",
+    "http-errors": "^2.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
