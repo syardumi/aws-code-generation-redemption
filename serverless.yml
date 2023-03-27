@@ -16,7 +16,7 @@ provider:
   runtime: nodejs16.x
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
-  timeout: 300
+  timeout: 30
   memorySize: 256
   lambdaHashingVersion: 20201221
   iamRoleStatements:
@@ -46,9 +46,20 @@ provider:
       Ref: CodeExpirationQueue
 
 functions:
+  getValidateCode:
+    handler: src/api/getValidateCode.handler
+    events:
+      - http:
+          method: get
+          path: /validate/{code_domain}/{code_hash}
+          cors: true
+          request:
+            parameters:
+              paths:
+                code_domain: true
+                code_hash: true
   postCreateCode:
     handler: src/api/postCreateCode.handler
-    timeout: 30
     events:
       - http:
           method: post
@@ -56,7 +67,6 @@ functions:
           cors: true
   postGenerateCode:
     handler: src/api/postGenerateCode.handler
-    timeout: 30
     events:
       - http:
           method: post
@@ -64,7 +74,6 @@ functions:
           cors: true
   postRedeemCode:
     handler: src/api/postRedeemCode.handler
-    timeout: 30
     events:
       - http:
           method: post
@@ -72,12 +81,14 @@ functions:
           cors: true
   scheduleGetAllDomains:
     handler: src/scheduleGetAllDomains.fire
+    timeout: 900
     events:
       - schedule:
           rate: rate(5 minutes)
           enabled: ${self:custom.scheduleEnabled.${self:provider.stage}}
   sqsExpireCodes:
     handler: src/sqsExpireCodes.receive
+    timeout: 900
     events:
       - sqs:
           arn:
