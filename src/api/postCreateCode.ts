@@ -1,11 +1,13 @@
 import { Handler } from 'aws-lambda'
-import { put } from '../ddb/put'
+import { putItem } from '../ddb/index'
 
 export const handler: Handler = async (event, _context, _callback) => {
-  const { code_domain, code_hash, expire_timestamp } = JSON.parse(event.body)
+  const { code_domain, code_hash, use_count, expire_timestamp } = JSON.parse(
+    event.body
+  )
 
   try {
-    await put({ code_domain, code_hash, expire_timestamp })
+    await putItem({ code_domain, code_hash, expire_timestamp, use_count })
 
     return {
       statusCode: 200,

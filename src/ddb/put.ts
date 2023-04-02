@@ -7,7 +7,7 @@ const ddb = new AWS.DynamoDB.DocumentClient()
  *
  * @param Item
  */
-export const put = async (Item: Code): Promise<void> => {
+export const putItem = async (Item: Code, isOverwrite?: boolean) => {
   await ddb
     .put({
       TableName: process.env.DOMAIN_TABLE_NAME,
@@ -19,13 +19,18 @@ export const put = async (Item: Code): Promise<void> => {
       throw e
     })
 
-  await ddb
-    .put({
-      TableName: process.env.CODE_TABLE_NAME,
-      Item,
-      ConditionExpression:
-        'attribute_not_exists(code_domain) and attribute_not_exists(code_hash)'
-    })
+  const putParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
+    TableName: process.env.CODE_TABLE_NAME,
+    Item
+  }
+
+  if (!isOverwrite) {
+    putParams.ConditionExpression =
+      'attribute_not_exists(code_domain) and attribute_not_exists(code_hash)'
+  }
+
+  return ddb
+    .put(putParams)
     .promise()
     .catch((e) => {
       console.error('Code Put Error', e)

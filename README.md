@@ -29,9 +29,10 @@ Create a record stored in DynamoDB. The Key is the combination of `code_domain` 
 
 _Body (JSON):_
 
-- `code_domain` (string): division in which this code can be used
-- `code_hash` (string): unique id for this code
-- `expire_timestamp` (number): the unix timestamp for when this code expires
+- \*`code_domain` (string): division in which this code can be used
+- \*`code_hash` (string): unique id for this code
+- \*`expire_timestamp` (number): the unix timestamp for when this code expires
+- `use_count` (number): the amount of times this code can be redeemed
 - \+ any other metadata you wish to store
 
 _Response:_
@@ -46,8 +47,9 @@ Generate a code hash based on the last 12 characters of UUID v4 and store it in 
 
 _Body (JSON):_
 
-- `code_domain` (string): division in which this code can be used
-- `expire_timestamp` (number): the unix timestamp for when this code expires
+- \*`code_domain` (string): division in which this code can be used
+- \*`expire_timestamp` (number): the unix timestamp for when this code expires
+- `use_count` (number): the amount of times this code can be redeemed
 - \+ any other metadata you wish to store
 
 _Response:_
@@ -62,13 +64,13 @@ Redeem a code stored in DynamoDB (essentially delete it).
 
 _Body (JSON):_
 
-- `code_domain` (string): division in which this code can be used
-- `code_hash` (string): unique id for this code
+- \*`code_domain` (string): division in which this code can be used
+- \*`code_hash` (string): unique id for this code
 
 _Response:_
 
 - 200: Success
-  - Body: All Code Attributes
+  - Body: all Code metadata, `wasDeleted` boolean
 - 404: Record Does Not Exist
 
 ---
