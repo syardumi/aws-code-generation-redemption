@@ -3,15 +3,18 @@ import { v4 as uuidv4 } from 'uuid'
 import { putItem } from '../ddb/index'
 
 export const handler: Handler = async (event, _context, _callback) => {
-  const { code_domain, use_count, expire_timestamp } = JSON.parse(event.body)
+  const item = JSON.parse(event.body)
 
   try {
-    const code_hash = uuidv4().split('-').slice(-1)[0].toUpperCase()
-    await putItem({ code_domain, expire_timestamp, code_hash, use_count })
+    const codeHash = uuidv4().split('-').slice(-1)[0].toUpperCase()
+    item.code_hash = item.code_hash || codeHash
+    await putItem(item)
 
     return {
       statusCode: 200,
-      body: `${code_domain}${code_hash}`
+      body: JSON.stringify({
+        item
+      })
     }
   } catch (e) {
     return {

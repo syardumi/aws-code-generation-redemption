@@ -10,7 +10,7 @@ export const fire: Handler = async (event, _context, _callback) => {
     do {
       result = await ddb
         .scan({
-          TableName: process.env.DOMAIN_TABLE_NAME,
+          TableName: process.env.CODE_DOMAIN_TABLE_NAME,
           ExclusiveStartKey,
           Limit: 100
         })

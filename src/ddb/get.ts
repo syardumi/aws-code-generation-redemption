@@ -1,4 +1,5 @@
-import AWS, { AWSError } from 'aws-sdk'
+import AWS from 'aws-sdk'
+import { CodeKey } from 'src/types/Code'
 
 const ddb = new AWS.DynamoDB.DocumentClient()
 
@@ -6,15 +7,15 @@ const ddb = new AWS.DynamoDB.DocumentClient()
  *
  * @param Key
  */
-export const getItem = (Key: { code_domain: string; code_hash: string }) => {
+export const getItem = (Key: CodeKey) => {
   return ddb
     .get({
-      TableName: process.env.CODE_TABLE_NAME,
+      TableName: process.env.CODE_HASH_TABLE_NAME,
       Key
     })
     .promise()
     .catch((e) => {
-      console.error('Code Put Error', e)
+      console.error('Code Hash Get Error', e)
       throw e
     })
 }

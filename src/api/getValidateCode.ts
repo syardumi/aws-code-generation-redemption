@@ -1,35 +1,24 @@
 import { Handler } from 'aws-lambda'
-import AWS from 'aws-sdk'
 import createError from 'http-errors'
-
-const ddb = new AWS.DynamoDB.DocumentClient()
+import { getItem } from '../ddb/index'
 
 export const handler: Handler = async (event, _context, _callback) => {
   const { code_domain, code_hash } = event.pathParameters
 
   try {
-    await ddb
-      .get({
-        TableName: process.env.CODE_TABLE_NAME,
-        Key: {
-          code_domain,
-          code_hash
-        }
-      })
-      .promise()
-      .then((data) => {
-        if (!data.Item) throw createError(404)
-      })
-      .catch((e) => {
-        throw createError(404)
-      })
+    const item = (await getItem({ code_domain, code_hash }))?.Item
+    if (!item) {
+      throw createError(404, 'Record Not Found')
+    }
 
     return {
-      statusCode: 200
+      statusCode: 200,
+      body: JSON.stringify({ item })
     }
   } catch (e) {
     return {
-      statusCode: e.statusCode
+      statusCode: e.statusCode,
+      body: e.message
     }
   }
 }

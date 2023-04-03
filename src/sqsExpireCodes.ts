@@ -15,7 +15,7 @@ export const receive: SQSHandler = async (event, _context, _callback) => {
       do {
         result = await ddb
           .query({
-            TableName: process.env.CODE_TABLE_NAME,
+            TableName: process.env.CODE_HASH_TABLE_NAME,
             IndexName: 'expired_in_domain_GSI',
             KeyConditionExpression:
               'code_domain = :d and expire_timestamp < :time',
@@ -33,7 +33,7 @@ export const receive: SQSHandler = async (event, _context, _callback) => {
           result.Items.map(async (Item) => {
             await ddb
               .delete({
-                TableName: process.env.CODE_TABLE_NAME,
+                TableName: process.env.CODE_HASH_TABLE_NAME,
                 Key: {
                   code_domain: Item.code_domain,
                   code_hash: Item.code_hash

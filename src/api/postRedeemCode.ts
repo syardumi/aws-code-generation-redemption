@@ -1,38 +1,31 @@
 import { Handler } from 'aws-lambda'
-import AWS from 'aws-sdk'
-import httpErrors from 'http-errors'
+import createError from 'http-errors'
+import { Code } from '../types/Code'
 import { getItem, putItem, deleteItem } from '../ddb/index'
-
-export const ddb = new AWS.DynamoDB.DocumentClient()
 
 export const handler: Handler = async (event, _context, _callback) => {
   const { code_domain, code_hash } = JSON.parse(event.body)
 
   try {
-    const item = (await getItem({ code_domain, code_hash }))?.Item
+    let item = (await getItem({ code_domain, code_hash }))?.Item as Code
     if (!item) {
-      throw httpErrors(404, 'Record Not Found')
+      throw createError(404, 'Record Not Found')
     }
 
-    let response, attributes, wasDeleted
+    let response, wasDeleted
     if (item?.use_count - 1 > 0) {
-      attributes = {
-        code_domain,
-        code_hash,
-        expire_timestamp: item.expire_timestamp,
-        use_count: item.use_count - 1
-      }
-      response = await putItem(attributes, true)
+      item.use_count -= 1
+      response = await putItem(item, true)
     } else {
       response = await deleteItem({ code_domain, code_hash })
-      attributes = response?.Attributes
-      delete attributes.use_count
+      item = response?.Attributes
+      delete item.use_count
       wasDeleted = true
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ attributes, wasDeleted })
+      body: JSON.stringify({ item, wasDeleted })
     }
   } catch (e) {
     return {

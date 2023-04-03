@@ -40,8 +40,8 @@ provider:
         - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:service}-domains-${self:provider.stage}/*
   environment:
     STAGE: ${self:provider.stage}
-    CODE_TABLE_NAME: ${self:service}-hashes-${self:provider.stage}
-    DOMAIN_TABLE_NAME: ${self:service}-domains-${self:provider.stage}
+    CODE_HASH_TABLE_NAME: ${self:service}-hashes-${self:provider.stage}
+    CODE_DOMAIN_TABLE_NAME: ${self:service}-domains-${self:provider.stage}
     CODE_EXPIRATION_QUEUE_URL:
       Ref: CodeExpirationQueue
 
@@ -58,13 +58,6 @@ functions:
               paths:
                 code_domain: true
                 code_hash: true
-  postCreateCode:
-    handler: src/api/postCreateCode.handler
-    events:
-      - http:
-          method: post
-          path: /create
-          cors: true
   postGenerateCode:
     handler: src/api/postGenerateCode.handler
     events:

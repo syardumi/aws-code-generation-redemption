@@ -9,7 +9,7 @@ services API Gateway, Cloudfront, Lambda, and DynamoDB.
 
 ## Requirements
 
-- Node 16.x
+- Node 16+
 - Yarn
 
 ---
@@ -23,44 +23,40 @@ services API Gateway, Cloudfront, Lambda, and DynamoDB.
 
 ## HTTP Actions
 
-`POST /create`
+`POST /generate`
 
-Create a record stored in DynamoDB. The Key is the combination of `code_domain` and `code_hash`.
+Create a record stored in DynamoDB. The Key is the combination of `code_domain` and `code_hash`. Optionally, generate a `code_hash` based on the last 12 characters of UUID v4.
+
+_Body (JSON):_
+
+- \*`code_domain` (string): division in which this code can be used
+- `code_hash` (string): unique id for this code - if none is given, one is generated
+- \*`expire_timestamp` (number): the unix timestamp for when this code expires
+- `use_count` (number): the amount of times this code can be redeemed
+- \+ any other metadata you wish to store
+
+_Response:_
+
+- 200: Success
+  - Body: all Code metadata
+- 400: Record Already Exists
+
+`GET /validate`
 
 _Body (JSON):_
 
 - \*`code_domain` (string): division in which this code can be used
 - \*`code_hash` (string): unique id for this code
-- \*`expire_timestamp` (number): the unix timestamp for when this code expires
-- `use_count` (number): the amount of times this code can be redeemed
-- \+ any other metadata you wish to store
 
 _Response:_
 
 - 200: Success
-  - Body: `code_domain`+`code_hash` value
-- 400: Record Already Exists
-
-`POST /generate`
-
-Generate a code hash based on the last 12 characters of UUID v4 and store it in DynamoDB. The Key is the combination of `code_domain` and `code_hash`.
-
-_Body (JSON):_
-
-- \*`code_domain` (string): division in which this code can be used
-- \*`expire_timestamp` (number): the unix timestamp for when this code expires
-- `use_count` (number): the amount of times this code can be redeemed
-- \+ any other metadata you wish to store
-
-_Response:_
-
-- 200: Success
-  - Body: `code_domain`+`code_hash` value
-- 400: Record Already Exists
+  - Body: all Code metadata
+- 404: Record Does Not Exist
 
 `POST /redeem`
 
-Redeem a code stored in DynamoDB (essentially delete it).
+Redeem a code stored in DynamoDB and optionally reduce `use_count` by 1. If `use_count` goes to 0, then delete the code record.
 
 _Body (JSON):_
 
