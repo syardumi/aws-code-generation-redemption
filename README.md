@@ -41,9 +41,9 @@ _Response:_
   - Body: all Code metadata
 - 400: Record Already Exists
 
-`GET /validate`
+`GET /validate/{code_domain}/{code_hash}`
 
-_Body (JSON):_
+_Path Parameters:_
 
 - \*`code_domain` (string): division in which this code can be used
 - \*`code_hash` (string): unique id for this code
