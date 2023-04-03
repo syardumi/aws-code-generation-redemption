@@ -23,7 +23,7 @@ services API Gateway, Cloudfront, Lambda, and DynamoDB.
 
 ## HTTP Actions
 
-`POST /generate`
+### `POST /generate`
 
 Create a record stored in DynamoDB. The Key is the combination of `code_domain` and `code_hash`. Optionally, generate a `code_hash` based on the last 12 characters of UUID v4.
 
@@ -41,7 +41,7 @@ _Response:_
   - Body: all Code metadata
 - 400: Record Already Exists
 
-`GET /validate/{code_domain}/{code_hash}`
+### `GET /validate/{code_domain}/{code_hash}`
 
 _Path Parameters:_
 
@@ -54,7 +54,7 @@ _Response:_
   - Body: all Code metadata
 - 404: Record Does Not Exist
 
-`POST /redeem`
+### `POST /redeem`
 
 Redeem a code stored in DynamoDB and optionally reduce `use_count` by 1. If `use_count` goes to 0, then delete the code record.
 
