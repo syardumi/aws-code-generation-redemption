@@ -28,7 +28,7 @@ provider:
       Action:
         - "sqs:ReceiveMessage"
         - "sqs:SendMessage"
-      Resource: 
+      Resource:
         - { "Fn::GetAtt": ["CodeExpirationQueue", "Arn"] }
     - Effect: "Allow"
       Action:
@@ -110,14 +110,14 @@ resources:
         TableName: "${self:service}-hashes-${self:provider.stage}"
         BillingMode: PAY_PER_REQUEST
         TimeToLiveSpecification:
-          AttributeName: expire_timestamp
+          AttributeName: ttl
           Enabled: true
         AttributeDefinitions:
           - AttributeName: code_domain
             AttributeType: S
           - AttributeName: code_hash
             AttributeType: S
-          - AttributeName: expire_timestamp
+          - AttributeName: ttl
             AttributeType: "N"
         KeySchema:
           - AttributeName: code_domain
@@ -129,7 +129,7 @@ resources:
             KeySchema:
               - AttributeName: code_domain
                 KeyType: HASH
-              - AttributeName: expire_timestamp
+              - AttributeName: ttl
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL

@@ -4,7 +4,7 @@ export interface CodeKey {
 }
 
 export interface Code extends CodeKey {
-  expire_timestamp: number
+  ttl: number
   use_count?: number
   [key: string]: any
 }
