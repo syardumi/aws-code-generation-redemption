@@ -31,7 +31,7 @@ _Body (JSON):_
 
 - \*`code_domain` (string): division in which this code can be used
 - `code_hash` (string): unique id for this code - if none is given, one is generated
-- \*`expire_timestamp` (number): the unix timestamp for when this code expires
+- \*`ttl` (number): the unix timestamp for when this code expires
 - `use_count` (number): the amount of times this code can be redeemed
 - \+ any other metadata you wish to store
 

@@ -17,8 +17,7 @@ export const receive: SQSHandler = async (event, _context, _callback) => {
           .query({
             TableName: process.env.CODE_HASH_TABLE_NAME,
             IndexName: 'expired_in_domain_GSI',
-            KeyConditionExpression:
-              'code_domain = :d and expire_timestamp < :time',
+            KeyConditionExpression: 'code_domain = :d and ttl < :time',
             ExpressionAttributeValues: {
               ':d': domain,
               ':time': Math.floor(Date.now() / 1000)
