@@ -1,8 +1,8 @@
 import { SQSHandler } from 'aws-lambda'
-import AWS from 'aws-sdk'
 import { asyncForEach } from './util/asyncForEach'
+import { ddb } from './ddb/_client'
 
-export const ddb = new AWS.DynamoDB.DocumentClient()
+export { ddb }
 
 export const receive: SQSHandler = async (event, _context, _callback) => {
   const { Records } = event
@@ -21,7 +21,7 @@ export const receive: SQSHandler = async (event, _context, _callback) => {
               'code_domain = :d and expire_timestamp < :time',
             ExpressionAttributeValues: {
               ':d': domain,
-              ':time': new Date().getTime()
+              ':time': Math.floor(Date.now() / 1000)
             },
             ScanIndexForward: true,
             ExclusiveStartKey,

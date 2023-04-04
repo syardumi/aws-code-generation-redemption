@@ -1,6 +1,7 @@
 import { Handler } from 'aws-lambda'
-import createError from 'http-errors'
-import { getItem } from '../ddb/index'
+import { getItem, ddb } from '../ddb/index'
+
+export { ddb }
 
 export const handler: Handler = async (event, _context, _callback) => {
   const { code_domain, code_hash } = event.pathParameters
@@ -8,7 +9,7 @@ export const handler: Handler = async (event, _context, _callback) => {
   try {
     const item = (await getItem({ code_domain, code_hash }))?.Item
     if (!item) {
-      throw createError(404, 'Record Not Found')
+      throw new Error('Not Found')
     }
 
     return {
@@ -17,8 +18,8 @@ export const handler: Handler = async (event, _context, _callback) => {
     }
   } catch (e) {
     return {
-      statusCode: e.statusCode,
-      body: e.message
+      statusCode: 404,
+      body: 'Record Not Found'
     }
   }
 }

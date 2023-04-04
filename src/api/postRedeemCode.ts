@@ -1,7 +1,9 @@
 import { Handler } from 'aws-lambda'
 import createError from 'http-errors'
 import { Code } from '../types/Code'
-import { getItem, putItem, deleteItem } from '../ddb/index'
+import { getItem, putItem, deleteItem, ddb } from '../ddb/index'
+
+export { ddb }
 
 export const handler: Handler = async (event, _context, _callback) => {
   const { code_domain, code_hash } = JSON.parse(event.body)

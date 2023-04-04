@@ -1,7 +1,5 @@
-import AWS from 'aws-sdk'
 import { Code } from 'src/types/Code'
-
-const ddb = new AWS.DynamoDB.DocumentClient()
+import { ddb } from './_client'
 
 /**
  *

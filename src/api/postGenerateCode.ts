@@ -1,6 +1,8 @@
 import { Handler } from 'aws-lambda'
 import { v4 as uuidv4 } from 'uuid'
-import { putItem } from '../ddb/index'
+import { putItem, ddb } from '../ddb/index'
+
+export { ddb }
 
 export const handler: Handler = async (event, _context, _callback) => {
   const item = JSON.parse(event.body)
