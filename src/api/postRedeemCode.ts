@@ -21,7 +21,7 @@ export const handler: Handler = async (event, _context, _callback) => {
     } else {
       response = await deleteItem({ code_domain, code_hash })
       item = response?.Attributes
-      delete item.use_count
+      if (item) delete item.use_count
       wasDeleted = true
     }
 

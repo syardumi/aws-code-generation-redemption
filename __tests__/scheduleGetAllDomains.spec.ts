@@ -49,5 +49,32 @@ describe(`Schedule Get All Domains`, () => {
     expect(domains).toEqual(['ABC', 'XYZ', 'DOM'])
   })
 
-  // TODO: failure
+  it('ddb fail', async () => {
+    ddb.scan = jest.fn().mockImplementation((params) => {
+      return {
+        promise: () =>
+          Promise.reject({
+            statusCode: 500,
+            message: 'Internal server error'
+          })
+      }
+    })
+
+    await fire({}, {} as Context, () => {})
+
+    expect(domains).toEqual([])
+  })
+
+  it('sqs fail', async () => {
+    sqs.sendMessage = jest.fn().mockImplementation((params) => {
+      return {
+        promise: () =>
+          Promise.reject({ statusCode: 500, message: 'Internal server error' })
+      }
+    })
+
+    await fire({}, {} as Context, () => {})
+
+    expect(domains).toEqual([])
+  })
 })

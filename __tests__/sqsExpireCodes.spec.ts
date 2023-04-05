@@ -55,5 +55,55 @@ describe(`SQS Expire Codes`, () => {
     ])
   })
 
-  // TODO: failure
+  it('ddb query fail', async () => {
+    ddb.query = jest.fn().mockImplementation((params) => {
+      return {
+        promise: () =>
+          Promise.reject({
+            statusCode: 500,
+            message: 'Internal server error'
+          })
+      }
+    })
+
+    await receive(
+      {
+        Records: [
+          {
+            body: '{"domain":"ABC"}'
+          } as SQSRecord
+        ]
+      },
+      {} as Context,
+      () => {}
+    )
+
+    expect(deleteKeys).toEqual([])
+  })
+
+  it('ddb delete fail', async () => {
+    ddb.delete = jest.fn().mockImplementation((params) => {
+      return {
+        promise: () =>
+          Promise.reject({
+            statusCode: 500,
+            message: 'Internal server error'
+          })
+      }
+    })
+
+    await receive(
+      {
+        Records: [
+          {
+            body: '{"domain":"ABC"}'
+          } as SQSRecord
+        ]
+      },
+      {} as Context,
+      () => {}
+    )
+
+    expect(deleteKeys).toEqual([])
+  })
 })
