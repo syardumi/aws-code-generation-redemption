@@ -53,6 +53,11 @@ describe(`POST Redeem Code`, () => {
 
     expect(response).toEqual({
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST' // Allow only GET request
+      },
       body: '{"item":{"code_domain":"ABC","code_hash":"testcode","expire_timestamp":32480292139},"wasDeleted":true}'
     })
   })
@@ -78,6 +83,11 @@ describe(`POST Redeem Code`, () => {
 
     expect(response).toEqual({
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST' // Allow only GET request
+      },
       body: '{"item":{"code_domain":"ABC","code_hash":"testcode","expire_timestamp":32480292139,"use_count":4}}'
     })
   })
@@ -107,8 +117,13 @@ describe(`POST Redeem Code`, () => {
     )
 
     expect(response).toEqual({
-      body: 'Internal server error',
-      statusCode: 500
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST' // Allow only GET request
+      },
+      body: 'Internal server error'
     })
   })
 
@@ -130,8 +145,13 @@ describe(`POST Redeem Code`, () => {
     )
 
     expect(response).toEqual({
-      body: 'Internal server error',
-      statusCode: 500
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST' // Allow only GET request
+      },
+      body: 'Internal server error'
     })
   })
 })

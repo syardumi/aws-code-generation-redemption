@@ -40,6 +40,11 @@ describe(`POST Generate Code`, () => {
 
     expect(response).toEqual({
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST' // Allow only GET request
+      },
       body: JSON.stringify({
         item: { code_domain: 'ABC', code_hash: 'testcode' }
       })
@@ -64,8 +69,13 @@ describe(`POST Generate Code`, () => {
     )
 
     expect(response).toEqual({
-      body: 'Record Already Exists',
-      statusCode: 400
+      statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST' // Allow only GET request
+      },
+      body: 'Record Already Exists'
     })
   })
 })

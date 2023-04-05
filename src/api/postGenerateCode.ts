@@ -14,13 +14,24 @@ export const handler: Handler = async (event, _context, _callback) => {
 
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST'
+      },
       body: JSON.stringify({
         item
       })
     }
   } catch (e) {
+    console.error(e)
     return {
       statusCode: e.statusCode,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'POST'
+      },
       body:
         e.message === 'The conditional request failed'
           ? 'Record Already Exists'

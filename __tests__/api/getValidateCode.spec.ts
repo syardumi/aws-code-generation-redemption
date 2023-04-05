@@ -30,6 +30,11 @@ describe(`GET Validate Code`, () => {
 
     expect(response).toEqual({
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'GET' // Allow only GET request
+      },
       body: JSON.stringify({
         item: { code_domain: 'ABC', code_hash: 'testcode' }
       })
@@ -51,6 +56,11 @@ describe(`GET Validate Code`, () => {
 
     expect(response).toEqual({
       statusCode: 404,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'GET' // Allow only GET request
+      },
       body: 'Record Not Found'
     })
   })
@@ -70,6 +80,11 @@ describe(`GET Validate Code`, () => {
 
     expect(response).toEqual({
       statusCode: 404,
+      headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*', // Allow from anywhere
+        'Access-Control-Allow-Methods': 'GET' // Allow only GET request
+      },
       body: 'Record Not Found'
     })
   })
