@@ -26,7 +26,7 @@ export const handler: Handler = async (event, _context, _callback) => {
   } catch (e) {
     console.error(e)
     return {
-      statusCode: e.statusCode,
+      statusCode: e.statusCode === 400 ? 409 : e.statusCode,
       headers: {
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Origin': '*', // Allow from anywhere

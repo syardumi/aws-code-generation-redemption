@@ -39,7 +39,7 @@ _Response:_
 
 - 200: Success
   - Body: all Code metadata
-- 400: Record Already Exists
+- 409: Record Already Exists
 
 ### `GET /validate/{code_domain}/{code_hash}`
 

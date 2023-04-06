@@ -69,7 +69,7 @@ describe(`POST Generate Code`, () => {
     )
 
     expect(response).toEqual({
-      statusCode: 400,
+      statusCode: 409,
       headers: {
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Origin': '*', // Allow from anywhere
