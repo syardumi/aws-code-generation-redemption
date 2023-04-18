@@ -28,7 +28,7 @@ provider:
       Action:
         - "sqs:ReceiveMessage"
         - "sqs:SendMessage"
-      Resource: 
+      Resource:
         - { "Fn::GetAtt": ["CodeExpirationQueue", "Arn"] }
     - Effect: "Allow"
       Action:
@@ -133,6 +133,9 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
+    #
+    # TODO: DAX cluster
+    #
     # SQS
     CodeExpirationDeadLetterQueue:
       Type: 'AWS::SQS::Queue'
