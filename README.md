@@ -25,6 +25,8 @@ services API Gateway, Cloudfront, Lambda, and DynamoDB.
 
 ### `POST /generate`
 
+# TODO: bulk
+
 Create a record stored in DynamoDB. The Key is the combination of `code_domain` and `code_hash`. Optionally, generate a `code_hash` based on the last 12 characters of UUID v4.
 
 _Body (JSON):_
